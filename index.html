@@ -2,158 +2,612 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<title>HTML Grabber</title>
+<title>Code Splitter</title>
 
 <style>
 *{
   box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:#111;
+  color:#fff;
 }
 
 body{
-  margin:0;
-  background:#111;
-  color:#fff;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  padding:20px;
+  padding:14px;
 }
 
-h1{
-  font-size:24px;
-  margin:0 0 15px;
+.container{
+  width:100%;
+  max-width:900px;
+  margin:0 auto;
+}
+
+.header{
+  margin-bottom:14px;
+}
+
+.title{
+  margin:0 0 5px;
+  font-size:25px;
+  font-weight:750;
+}
+
+.description{
+  margin:0;
+  color:#999;
+  font-size:14px;
+  line-height:1.4;
+}
+
+.card{
+  background:#1d1d1d;
+  border-radius:15px;
+  padding:10px;
+  box-shadow:0 7px 30px rgba(0,0,0,.25);
 }
 
 textarea{
+  display:block;
   width:100%;
-  min-height:130px;
-  background:#1c1c1c;
-  color:#fff;
-  border:1px solid #444;
-  border-radius:12px;
-  padding:14px;
-  font-size:16px;
-  outline:none;
+  min-height:280px;
   resize:vertical;
+  border:0;
+  outline:0;
+  border-radius:11px;
+  padding:13px;
+  background:#292929;
+  color:#fff;
+  font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  -webkit-appearance:none;
+}
+
+textarea::placeholder{
+  color:#777;
 }
 
 textarea:focus{
-  border-color:#777;
+  box-shadow:0 0 0 2px rgba(255,255,255,.18);
+}
+
+.controls{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
 }
 
 button{
-  width:100%;
-  margin-top:12px;
-  padding:15px;
+  min-height:42px;
   border:0;
-  border-radius:12px;
-  background:#fff;
-  color:#000;
-  font-size:16px;
-  font-weight:600;
+  outline:0;
+  border-radius:10px;
+  padding:0 15px;
+  background:#303030;
+  color:#fff;
+  font-size:14px;
+  font-weight:650;
+  cursor:pointer;
+  transition:transform .12s ease,background .15s ease;
 }
 
 button:active{
-  transform:scale(.98);
+  transform:scale(.96);
 }
 
-#status{
-  margin-top:15px;
-  color:#aaa;
+button.primary{
+  background:#fff;
+  color:#111;
+}
+
+button.danger{
+  background:#482828;
+}
+
+.info{
+  margin-top:9px;
+  color:#888;
+  font-size:12px;
+  line-height:1.4;
+}
+
+.parts{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+.part{
+  min-width:0;
+  background:#1d1d1d;
+  border-radius:15px;
+  padding:10px;
+  box-shadow:0 7px 30px rgba(0,0,0,.25);
+}
+
+.part-title{
+  margin:2px 3px 9px;
   font-size:14px;
+  font-weight:700;
 }
 
-#result{
-  margin-top:15px;
-  width:100%;
-  min-height:400px;
-  background:#080808;
-  border:1px solid #333;
-  border-radius:12px;
-  padding:14px;
-  color:#ddd;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:13px;
-  line-height:1.5;
-  white-space:pre-wrap;
-  overflow:auto;
+.part textarea{
+  min-height:340px;
+}
+
+.stats{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:7px;
+  color:#777;
+  font-size:11px;
+}
+
+.progress-wrap{
+  margin-top:10px;
+  height:6px;
+  overflow:hidden;
+  border-radius:99px;
+  background:#303030;
+}
+
+.progress{
+  width:0%;
+  height:100%;
+  border-radius:99px;
+  background:#fff;
+  transition:width .2s ease;
+}
+
+@media(max-width:700px){
+
+  body{
+    padding:9px;
+  }
+
+  .title{
+    font-size:23px;
+  }
+
+  .parts{
+    grid-template-columns:1fr;
+  }
+
+  textarea{
+    min-height:240px;
+  }
+
+  .part textarea{
+    min-height:300px;
+  }
+
+  button{
+    flex:1;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h1>HTML Grabber</h1>
+<div class="container">
 
-<textarea
-  id="url"
-  placeholder="Вставь сюда ссылку на сайт&#10;&#10;Например: https://example.com"
-></textarea>
+  <div class="header">
+    <h1 class="title">Code Splitter</h1>
+    <p class="description">
+      Вставь большой HTML, JavaScript или другой код и раздели его на две части.
+    </p>
+  </div>
 
-<button onclick="getSite()">
-  Получить код сайта
-</button>
+  <div class="card">
 
-<div id="status"></div>
+    <textarea
+      id="input"
+      spellcheck="false"
+      autocapitalize="off"
+      autocorrect="off"
+      placeholder="Вставь сюда весь большой код..."
+    ></textarea>
 
-<pre id="result"></pre>
+    <div class="controls">
+      <button class="primary" id="splitButton">
+        Разделить код
+      </button>
+
+      <button id="copyAllButton">
+        Копировать всё
+      </button>
+
+      <button class="danger" id="clearButton">
+        Очистить
+      </button>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="info" id="info">
+      Символов: 0
+    </div>
+
+  </div>
+
+  <div class="parts">
+
+    <div class="part">
+
+      <div class="part-title">
+        Часть 1
+      </div>
+
+      <textarea
+        id="part1"
+        readonly
+        spellcheck="false"
+        placeholder="Здесь появится первая часть..."
+      ></textarea>
+
+      <div class="stats">
+        <span id="stats1">0 символов</span>
+        <span id="lines1">0 строк</span>
+      </div>
+
+      <div class="controls">
+        <button id="copy1">
+          Копировать часть 1
+        </button>
+      </div>
+
+    </div>
+
+    <div class="part">
+
+      <div class="part-title">
+        Часть 2
+      </div>
+
+      <textarea
+        id="part2"
+        readonly
+        spellcheck="false"
+        placeholder="Здесь появится вторая часть..."
+      ></textarea>
+
+      <div class="stats">
+        <span id="stats2">0 символов</span>
+        <span id="lines2">0 строк</span>
+      </div>
+
+      <div class="controls">
+        <button id="copy2">
+          Копировать часть 2
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
 <script>
+const input = document.getElementById("input");
 
-async function getSite(){
+const part1 = document.getElementById("part1");
+const part2 = document.getElementById("part2");
 
-  const input = document.getElementById("url");
-  const status = document.getElementById("status");
-  const result = document.getElementById("result");
+const splitButton = document.getElementById("splitButton");
+const copyAllButton = document.getElementById("copyAllButton");
+const clearButton = document.getElementById("clearButton");
 
-  let url = input.value.trim();
+const copy1Button = document.getElementById("copy1");
+const copy2Button = document.getElementById("copy2");
 
-  if(!url){
-    status.textContent = "Вставь ссылку на сайт.";
+const info = document.getElementById("info");
+const progress = document.getElementById("progress");
+
+const stats1 = document.getElementById("stats1");
+const stats2 = document.getElementById("stats2");
+
+const lines1 = document.getElementById("lines1");
+const lines2 = document.getElementById("lines2");
+
+
+function formatNumber(number){
+  return number.toLocaleString("ru-RU");
+}
+
+
+function countLines(text){
+
+  if(!text){
+    return 0;
+  }
+
+  return text.split(/\r\n|\r|\n/).length;
+}
+
+
+function updateInfo(){
+
+  const length = input.value.length;
+
+  info.textContent =
+    "Символов: " + formatNumber(length);
+
+  if(length === 0){
+    progress.style.width = "0%";
+  }
+}
+
+
+function findBestSplitPosition(code){
+
+  const middle = Math.floor(code.length / 2);
+
+  /*
+    Сначала пытаемся закончить первую часть
+    на ближайшем переносе строки ДО середины.
+  */
+
+  const before = code.lastIndexOf("\n", middle);
+
+  /*
+    Если перенос слишком далеко от середины,
+    ищем ближайший перенос ПОСЛЕ середины.
+  */
+
+  const after = code.indexOf("\n", middle);
+
+  if(before !== -1){
+
+    const beforeDistance = middle - before;
+
+    if(after !== -1){
+
+      const afterDistance = after - middle;
+
+      if(afterDistance < beforeDistance){
+        return after + 1;
+      }
+    }
+
+    return before + 1;
+  }
+
+  if(after !== -1){
+    return after + 1;
+  }
+
+  return middle;
+}
+
+
+function splitCode(){
+
+  const code = input.value;
+
+  if(!code.trim()){
+
+    part1.value = "";
+    part2.value = "";
+
+    stats1.textContent = "0 символов";
+    stats2.textContent = "0 символов";
+
+    lines1.textContent = "0 строк";
+    lines2.textContent = "0 строк";
+
+    progress.style.width = "0%";
+
+    info.textContent = "Сначала вставь код.";
+
     return;
   }
 
-  if(!/^https?:\/\//i.test(url)){
-    url = "https://" + url;
+  const splitPosition = findBestSplitPosition(code);
+
+  const first = code.slice(0, splitPosition);
+  const second = code.slice(splitPosition);
+
+  part1.value = first;
+  part2.value = second;
+
+  const total = code.length;
+
+  const percent =
+    total > 0
+      ? Math.round((first.length / total) * 100)
+      : 50;
+
+  progress.style.width = percent + "%";
+
+  stats1.textContent =
+    formatNumber(first.length) + " символов";
+
+  stats2.textContent =
+    formatNumber(second.length) + " символов";
+
+  lines1.textContent =
+    formatNumber(countLines(first)) + " строк";
+
+  lines2.textContent =
+    formatNumber(countLines(second)) + " строк";
+
+  info.textContent =
+    "Готово: часть 1 — " +
+    formatNumber(first.length) +
+    " символов, часть 2 — " +
+    formatNumber(second.length) +
+    " символов.";
+}
+
+
+async function copyText(text, button){
+
+  if(!text){
+    button.textContent = "Пусто";
+
+    setTimeout(() => {
+      button.textContent =
+        button === copy1Button
+          ? "Копировать часть 1"
+          : "Копировать часть 2";
+    }, 1000);
+
+    return;
   }
 
-  status.textContent = "Загружаю страницу...";
-  result.textContent = "";
+  const originalText = button.textContent;
 
   try{
 
-    const response = await fetch(url, {
-      method:"GET"
-    });
+    if(navigator.clipboard &&
+       navigator.clipboard.writeText){
 
-    if(!response.ok){
-      throw new Error(
-        "HTTP " + response.status
-      );
+      await navigator.clipboard.writeText(text);
+
+    }else{
+
+      throw new Error("Clipboard API unavailable");
+
     }
-
-    const html = await response.text();
-
-    status.textContent =
-      "Готово. Получено символов: " + html.length;
-
-    result.textContent = html;
 
   }catch(error){
 
-    status.textContent =
-      "Не удалось получить сайт.";
+    /*
+      Запасной способ для Safari/iPhone.
+    */
 
-    result.textContent =
-      "Ошибка:\n\n" +
-      error.message +
-      "\n\n" +
-      "Скорее всего сайт запрещает запросы из браузера (CORS).";
+    const temporary = document.createElement("textarea");
 
+    temporary.value = text;
+
+    temporary.style.position = "fixed";
+    temporary.style.left = "-9999px";
+    temporary.style.top = "0";
+
+    document.body.appendChild(temporary);
+
+    temporary.focus();
+    temporary.select();
+    temporary.setSelectionRange(
+      0,
+      temporary.value.length
+    );
+
+    try{
+      document.execCommand("copy");
+    }catch(e){
+      alert("Не удалось скопировать код автоматически.");
+    }
+
+    temporary.remove();
   }
 
+  button.textContent = "Скопировано";
+
+  setTimeout(() => {
+    button.textContent = originalText;
+  }, 1200);
 }
 
+
+splitButton.addEventListener(
+  "click",
+  splitCode
+);
+
+
+copy1Button.addEventListener(
+  "click",
+  () => {
+    copyText(part1.value, copy1Button);
+  }
+);
+
+
+copy2Button.addEventListener(
+  "click",
+  () => {
+    copyText(part2.value, copy2Button);
+  }
+);
+
+
+copyAllButton.addEventListener(
+  "click",
+  () => {
+
+    const first = part1.value;
+    const second = part2.value;
+
+    if(!first && !second){
+
+      if(input.value){
+        copyText(input.value, copyAllButton);
+      }else{
+        copyAllButton.textContent = "Пусто";
+
+        setTimeout(() => {
+          copyAllButton.textContent = "Копировать всё";
+        }, 1000);
+      }
+
+      return;
+    }
+
+    copyText(
+      first + second,
+      copyAllButton
+    );
+  }
+);
+
+
+clearButton.addEventListener(
+  "click",
+  () => {
+
+    input.value = "";
+
+    part1.value = "";
+    part2.value = "";
+
+    stats1.textContent = "0 символов";
+    stats2.textContent = "0 символов";
+
+    lines1.textContent = "0 строк";
+    lines2.textContent = "0 строк";
+
+    progress.style.width = "0%";
+
+    updateInfo();
+
+    input.focus();
+  }
+);
+
+
+input.addEventListener(
+  "input",
+  updateInfo
+);
+
+
+updateInfo();
 </script>
 
 </body>
