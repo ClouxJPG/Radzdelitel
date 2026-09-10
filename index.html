@@ -1,407 +1,160 @@
-<!-- ================= HTML SPLITTER ================= -->
-<div id="htmlSplitter">
-  <div class="splitter-card">
-    <div class="splitter-title">Разделитель HTML</div>
-    <div class="splitter-subtitle">
-      Вставь большой HTML-код и раздели его на несколько частей
-    </div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <textarea
-      id="splitterInput"
-      placeholder="Вставь сюда свой index.html..."
-      spellcheck="false"
-    ></textarea>
-
-    <div class="splitter-controls">
-      <label for="splitterCount">Количество частей:</label>
-
-      <select id="splitterCount">
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4" selected>4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-      </select>
-
-      <button id="splitterButton">Разделить</button>
-    </div>
-
-    <div id="splitterInfo"></div>
-    <div id="splitterParts"></div>
-  </div>
-</div>
+<title>HTML Grabber</title>
 
 <style>
-/* ================= HTML SPLITTER STYLE ================= */
-
-#htmlSplitter {
-  width: 100%;
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 15px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+*{
+  box-sizing:border-box;
 }
 
-#htmlSplitter .splitter-card {
-  width: 100%;
-  padding: 18px;
-  border-radius: 18px;
-  background: rgba(25, 25, 25, 0.96);
-  color: white;
-  box-shadow: 0 10px 35px rgba(0,0,0,.25);
+body{
+  margin:0;
+  background:#111;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  padding:20px;
 }
 
-#htmlSplitter .splitter-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 5px;
+h1{
+  font-size:24px;
+  margin:0 0 15px;
 }
 
-#htmlSplitter .splitter-subtitle {
-  font-size: 14px;
-  opacity: .65;
-  margin-bottom: 15px;
+textarea{
+  width:100%;
+  min-height:130px;
+  background:#1c1c1c;
+  color:#fff;
+  border:1px solid #444;
+  border-radius:12px;
+  padding:14px;
+  font-size:16px;
+  outline:none;
+  resize:vertical;
 }
 
-#splitterInput {
-  width: 100%;
-  height: 260px;
-  resize: vertical;
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 13px;
-  outline: none;
-  padding: 13px;
-  background: #111;
-  color: white;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 13px;
-  line-height: 1.45;
+textarea:focus{
+  border-color:#777;
 }
 
-#splitterInput:focus {
-  border-color: rgba(255,255,255,.3);
+button{
+  width:100%;
+  margin-top:12px;
+  padding:15px;
+  border:0;
+  border-radius:12px;
+  background:#fff;
+  color:#000;
+  font-size:16px;
+  font-weight:600;
 }
 
-.splitter-controls {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-top: 12px;
-  flex-wrap: wrap;
+button:active{
+  transform:scale(.98);
 }
 
-.splitter-controls label {
-  font-size: 14px;
-  opacity: .75;
+#status{
+  margin-top:15px;
+  color:#aaa;
+  font-size:14px;
 }
 
-#splitterCount {
-  height: 42px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 10px;
-  background: #2b2b2b;
-  color: white;
-  font-size: 15px;
-  outline: none;
-}
-
-#splitterButton {
-  height: 42px;
-  padding: 0 17px;
-  border: 0;
-  border-radius: 10px;
-  background: #3a3a3a;
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform .12s, background .12s;
-}
-
-#splitterButton:active {
-  transform: scale(.96);
-}
-
-#splitterInfo {
-  margin-top: 12px;
-  font-size: 12px;
-  opacity: .55;
-}
-
-.splitter-part {
-  margin-top: 15px;
-  padding: 13px;
-  border-radius: 14px;
-  background: #191919;
-  border: 1px solid rgba(255,255,255,.07);
-}
-
-.splitter-part-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 9px;
-}
-
-.splitter-part-name {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.splitter-part-size {
-  font-size: 11px;
-  opacity: .45;
-}
-
-.splitter-part textarea {
-  width: 100%;
-  height: 180px;
-  resize: vertical;
-  border: 0;
-  outline: none;
-  border-radius: 10px;
-  padding: 11px;
-  background: #0d0d0d;
-  color: white;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.splitter-copy {
-  width: 100%;
-  height: 40px;
-  margin-top: 8px;
-  border: 0;
-  border-radius: 9px;
-  background: #303030;
-  color: white;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.splitter-copy.copied {
-  background: #315d43;
-}
-
-/* На телефоне */
-@media (max-width: 600px) {
-  #htmlSplitter {
-    padding: 8px;
-    margin: 15px auto;
-  }
-
-  #htmlSplitter .splitter-card {
-    padding: 14px;
-    border-radius: 15px;
-  }
-
-  #splitterInput {
-    height: 220px;
-    font-size: 12px;
-  }
-
-  .splitter-controls {
-    display: grid;
-    grid-template-columns: 1fr 80px;
-  }
-
-  .splitter-controls label {
-    grid-column: 1 / -1;
-  }
-
-  #splitterButton {
-    width: 100%;
-  }
-
-  .splitter-part textarea {
-    height: 160px;
-    font-size: 11px;
-  }
+#result{
+  margin-top:15px;
+  width:100%;
+  min-height:400px;
+  background:#080808;
+  border:1px solid #333;
+  border-radius:12px;
+  padding:14px;
+  color:#ddd;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:13px;
+  line-height:1.5;
+  white-space:pre-wrap;
+  overflow:auto;
 }
 </style>
+</head>
+
+<body>
+
+<h1>HTML Grabber</h1>
+
+<textarea
+  id="url"
+  placeholder="Вставь сюда ссылку на сайт&#10;&#10;Например: https://example.com"
+></textarea>
+
+<button onclick="getSite()">
+  Получить код сайта
+</button>
+
+<div id="status"></div>
+
+<pre id="result"></pre>
 
 <script>
-/* ================= HTML SPLITTER LOGIC ================= */
 
-(function () {
+async function getSite(){
 
-  const input = document.getElementById("splitterInput");
-  const count = document.getElementById("splitterCount");
-  const button = document.getElementById("splitterButton");
-  const info = document.getElementById("splitterInfo");
-  const partsContainer = document.getElementById("splitterParts");
+  const input = document.getElementById("url");
+  const status = document.getElementById("status");
+  const result = document.getElementById("result");
 
-  function copyText(text, textarea, button) {
+  let url = input.value.trim();
 
-    if (navigator.clipboard && window.isSecureContext) {
-
-      navigator.clipboard.writeText(text)
-        .then(() => copied(button))
-        .catch(() => fallbackCopy(text, textarea, button));
-
-    } else {
-      fallbackCopy(text, textarea, button);
-    }
+  if(!url){
+    status.textContent = "Вставь ссылку на сайт.";
+    return;
   }
 
-  function fallbackCopy(text, textarea, button) {
-
-    textarea.focus();
-    textarea.select();
-
-    try {
-      document.execCommand("copy");
-      copied(button);
-    } catch (e) {
-      button.textContent = "Выдели и скопируй";
-    }
+  if(!/^https?:\/\//i.test(url)){
+    url = "https://" + url;
   }
 
-  function copied(button) {
+  status.textContent = "Загружаю страницу...";
+  result.textContent = "";
 
-    const oldText = button.textContent;
+  try{
 
-    button.textContent = "Скопировано";
-    button.classList.add("copied");
-
-    setTimeout(() => {
-      button.textContent = oldText;
-      button.classList.remove("copied");
-    }, 1200);
-  }
-
-  function splitCode() {
-
-    const text = input.value;
-
-    partsContainer.innerHTML = "";
-
-    if (!text.trim()) {
-      info.textContent = "Сначала вставь HTML-код.";
-      return;
-    }
-
-    let totalParts = parseInt(count.value, 10);
-
-    /* Защита: максимум 7 */
-    totalParts = Math.max(2, Math.min(7, totalParts));
-
-    /*
-     * Сначала примерно равномерно распределяем код.
-     * Затем стараемся закончить каждую часть
-     * на переносе строки, чтобы не резать HTML посреди строки.
-     */
-
-    const length = text.length;
-    const targetSize = Math.ceil(length / totalParts);
-
-    const result = [];
-
-    let start = 0;
-
-    for (let i = 0; i < totalParts; i++) {
-
-      if (i === totalParts - 1) {
-        result.push(text.slice(start));
-        break;
-      }
-
-      const target = start + targetSize;
-
-      let end = text.indexOf("\n", target);
-
-      if (end === -1) {
-        end = target;
-      } else {
-        end += 1;
-      }
-
-      result.push(text.slice(start, end));
-
-      start = end;
-    }
-
-    info.textContent =
-      "Всего символов: " +
-      length.toLocaleString("ru-RU") +
-      " • частей: " +
-      result.length;
-
-    result.forEach((part, index) => {
-
-      const wrapper = document.createElement("div");
-      wrapper.className = "splitter-part";
-
-      const header = document.createElement("div");
-      header.className = "splitter-part-header";
-
-      const name = document.createElement("div");
-      name.className = "splitter-part-name";
-      name.textContent =
-        "Часть " + (index + 1) + " из " + result.length;
-
-      const size = document.createElement("div");
-      size.className = "splitter-part-size";
-      size.textContent =
-        part.length.toLocaleString("ru-RU") + " символов";
-
-      header.appendChild(name);
-      header.appendChild(size);
-
-      const textarea = document.createElement("textarea");
-      textarea.readOnly = true;
-      textarea.spellcheck = false;
-      textarea.value = part;
-
-      const copyButton = document.createElement("button");
-      copyButton.className = "splitter-copy";
-      copyButton.textContent =
-        "Скопировать часть " + (index + 1);
-
-      copyButton.addEventListener("click", function () {
-        copyText(part, textarea, copyButton);
-      });
-
-      wrapper.appendChild(header);
-      wrapper.appendChild(textarea);
-      wrapper.appendChild(copyButton);
-
-      partsContainer.appendChild(wrapper);
+    const response = await fetch(url, {
+      method:"GET"
     });
 
-    /*
-     * Прокручиваем к результатам.
-     * На iPhone это особенно удобно.
-     */
-    setTimeout(() => {
-      partsContainer.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }, 100);
-  }
-
-  button.addEventListener("click", splitCode);
-
-  input.addEventListener("input", function () {
-
-    if (!input.value) {
-      info.textContent = "";
-      partsContainer.innerHTML = "";
-      return;
+    if(!response.ok){
+      throw new Error(
+        "HTTP " + response.status
+      );
     }
 
-    info.textContent =
-      "Вставлено: " +
-      input.value.length.toLocaleString("ru-RU") +
-      " символов";
-  });
+    const html = await response.text();
 
-})();
+    status.textContent =
+      "Готово. Получено символов: " + html.length;
+
+    result.textContent = html;
+
+  }catch(error){
+
+    status.textContent =
+      "Не удалось получить сайт.";
+
+    result.textContent =
+      "Ошибка:\n\n" +
+      error.message +
+      "\n\n" +
+      "Скорее всего сайт запрещает запросы из браузера (CORS).";
+
+  }
+
+}
+
 </script>
-<!-- ================= END HTML SPLITTER ================= -->
+
+</body>
+</html>
